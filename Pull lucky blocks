@@ -1,0 +1,555 @@
+local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+
+local LocalPlayer = Players.LocalPlayer
+
+local parentGui
+
+if gethui then
+    local success, result = pcall(gethui)
+
+    if success and result then
+        parentGui = result
+    end
+end
+
+if not parentGui then
+    local success, coreGui = pcall(function()
+        return game:GetService("CoreGui")
+    end)
+
+    if success and coreGui then
+        parentGui = coreGui
+    else
+        parentGui = LocalPlayer:WaitForChild("PlayerGui")
+    end
+end
+
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "EliteScriptHubNoFlash"
+screenGui.ResetOnSpawn = false
+screenGui.IgnoreGuiInset = true
+screenGui.Parent = parentGui
+
+local mainFrame = Instance.new("Frame")
+mainFrame.Name = "MainFrame"
+mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+mainFrame.Size = UDim2.new(0, 0, 0, 0)
+mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+mainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
+mainFrame.BackgroundTransparency = 1
+mainFrame.BorderSizePixel = 0
+mainFrame.Visible = false
+mainFrame.ClipsDescendants = true
+mainFrame.Parent = screenGui
+
+local mainCorner = Instance.new("UICorner")
+mainCorner.CornerRadius = UDim.new(0, 12)
+mainCorner.Parent = mainFrame
+
+local mainStroke = Instance.new("UIStroke")
+mainStroke.Color = Color3.fromRGB(55, 55, 70)
+mainStroke.Transparency = 0.3
+mainStroke.Thickness = 1.5
+mainStroke.Parent = mainFrame
+
+local titleBar = Instance.new("Frame")
+titleBar.Name = "TitleBar"
+titleBar.Size = UDim2.new(1, 0, 0, 40)
+titleBar.BackgroundColor3 = Color3.fromRGB(22, 22, 30)
+titleBar.BackgroundTransparency = 0.2
+titleBar.BorderSizePixel = 0
+titleBar.Parent = mainFrame
+
+local titleCorner = Instance.new("UICorner")
+titleCorner.CornerRadius = UDim.new(0, 12)
+titleCorner.Parent = titleBar
+
+local titleText = Instance.new("TextLabel")
+titleText.Name = "TitleText"
+titleText.Size = UDim2.new(1, -60, 1, 0)
+titleText.Position = UDim2.new(0, 15, 0, 0)
+titleText.BackgroundTransparency = 1
+titleText.Text = "Elite Script Hub"
+titleText.TextColor3 = Color3.fromRGB(240, 240, 245)
+titleText.TextXAlignment = Enum.TextXAlignment.Left
+titleText.Font = Enum.Font.GothamBold
+titleText.TextSize = 15
+titleText.Parent = titleBar
+
+local closeButton = Instance.new("TextButton")
+closeButton.Name = "CloseButton"
+closeButton.Size = UDim2.new(0, 30, 0, 30)
+closeButton.Position = UDim2.new(1, -35, 0.5, -15)
+closeButton.BackgroundColor3 = Color3.fromRGB(210, 50, 50)
+closeButton.BackgroundTransparency = 0.2
+closeButton.Text = "x"
+closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeButton.Font = Enum.Font.GothamBold
+closeButton.TextSize = 16
+closeButton.AutoButtonColor = false
+closeButton.Parent = titleBar
+
+local closeCorner = Instance.new("UICorner")
+closeCorner.CornerRadius = UDim.new(0, 8)
+closeCorner.Parent = closeButton
+
+local openButton = Instance.new("TextButton")
+openButton.Name = "OpenButton"
+openButton.AnchorPoint = Vector2.new(0.5, 0.5)
+openButton.Size = UDim2.new(0, 45, 0, 45)
+openButton.Position = UDim2.new(0.15, 0, 0.2, 0)
+openButton.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+openButton.BackgroundTransparency = 0.2
+openButton.Text = "S"
+openButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+openButton.Font = Enum.Font.GothamBold
+openButton.TextSize = 18
+openButton.Visible = false
+openButton.AutoButtonColor = false
+openButton.ClipsDescendants = true
+openButton.Parent = screenGui
+
+local openCorner = Instance.new("UICorner")
+openCorner.CornerRadius = UDim.new(1, 0)
+openCorner.Parent = openButton
+
+local openStroke = Instance.new("UIStroke")
+openStroke.Color = Color3.fromRGB(80, 80, 105)
+openStroke.Thickness = 1.5
+openStroke.Parent = openButton
+
+local sideBar = Instance.new("Frame")
+sideBar.Name = "SideBar"
+sideBar.Size = UDim2.new(0, 120, 1, -40)
+sideBar.Position = UDim2.new(0, 0, 0, 40)
+sideBar.BackgroundColor3 = Color3.fromRGB(20, 20, 28)
+sideBar.BackgroundTransparency = 0.4
+sideBar.BorderSizePixel = 0
+sideBar.Parent = mainFrame
+
+local contentContainer = Instance.new("Frame")
+contentContainer.Name = "ContentContainer"
+contentContainer.Size = UDim2.new(1, -130, 1, -50)
+contentContainer.Position = UDim2.new(0, 125, 0, 45)
+contentContainer.BackgroundTransparency = 1
+contentContainer.Parent = mainFrame
+
+local autoTab = Instance.new("ScrollingFrame")
+autoTab.Name = "AutoTab"
+autoTab.Size = UDim2.new(1, 0, 1, 0)
+autoTab.BackgroundTransparency = 1
+autoTab.BorderSizePixel = 0
+autoTab.CanvasSize = UDim2.new(0, 0, 0, 240)
+autoTab.Visible = true
+autoTab.Parent = contentContainer
+
+local settingsTab = Instance.new("ScrollingFrame")
+settingsTab.Name = "SettingsTab"
+settingsTab.Size = UDim2.new(1, 0, 1, 0)
+settingsTab.BackgroundTransparency = 1
+settingsTab.BorderSizePixel = 0
+settingsTab.CanvasSize = UDim2.new(0, 0, 0, 0)
+settingsTab.Visible = false
+settingsTab.Parent = contentContainer
+
+local tabButton1 = Instance.new("TextButton")
+tabButton1.Name = "TabButton1"
+tabButton1.Size = UDim2.new(1, -16, 0, 36)
+tabButton1.Position = UDim2.new(0, 8, 0, 12)
+tabButton1.BackgroundColor3 = Color3.fromRGB(45, 45, 60)
+tabButton1.BackgroundTransparency = 0.2
+tabButton1.Text = "Auto"
+tabButton1.TextColor3 = Color3.fromRGB(255, 255, 255)
+tabButton1.Font = Enum.Font.GothamBold
+tabButton1.TextSize = 13
+tabButton1.AutoButtonColor = false
+tabButton1.Parent = sideBar
+
+local tab1Corner = Instance.new("UICorner")
+tab1Corner.CornerRadius = UDim.new(0, 8)
+tab1Corner.Parent = tabButton1
+
+local tabButton2 = Instance.new("TextButton")
+tabButton2.Name = "TabButton2"
+tabButton2.Size = UDim2.new(1, -16, 0, 36)
+tabButton2.Position = UDim2.new(0, 8, 0, 56)
+tabButton2.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+tabButton2.BackgroundTransparency = 0.5
+tabButton2.Text = "Utilities"
+tabButton2.TextColor3 = Color3.fromRGB(170, 170, 185)
+tabButton2.Font = Enum.Font.GothamMedium
+tabButton2.TextSize = 13
+tabButton2.AutoButtonColor = false
+tabButton2.Parent = sideBar
+
+local tab2Corner = Instance.new("UICorner")
+tab2Corner.CornerRadius = UDim.new(0, 8)
+tab2Corner.Parent = tabButton2
+
+tabButton1.MouseButton1Click:Connect(function()
+    autoTab.Visible = true
+    settingsTab.Visible = false
+
+    tabButton1.BackgroundColor3 = Color3.fromRGB(45, 45, 60)
+    tabButton1.BackgroundTransparency = 0.2
+    tabButton1.TextColor3 = Color3.fromRGB(255, 255, 255)
+    tabButton1.Font = Enum.Font.GothamBold
+
+    tabButton2.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+    tabButton2.BackgroundTransparency = 0.5
+    tabButton2.TextColor3 = Color3.fromRGB(170, 170, 185)
+    tabButton2.Font = Enum.Font.GothamMedium
+end)
+
+tabButton2.MouseButton1Click:Connect(function()
+    autoTab.Visible = false
+    settingsTab.Visible = true
+
+    tabButton2.BackgroundColor3 = Color3.fromRGB(45, 45, 60)
+    tabButton2.BackgroundTransparency = 0.2
+    tabButton2.TextColor3 = Color3.fromRGB(255, 255, 255)
+    tabButton2.Font = Enum.Font.GothamBold
+
+    tabButton1.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+    tabButton1.BackgroundTransparency = 0.5
+    tabButton1.TextColor3 = Color3.fromRGB(170, 170, 185)
+    tabButton1.Font = Enum.Font.GothamMedium
+end)
+
+local toggleButton = Instance.new("TextButton")
+toggleButton.Name = "ToggleButton"
+toggleButton.Size = UDim2.new(1, -10, 0, 42)
+toggleButton.Position = UDim2.new(0, 5, 0, 10)
+toggleButton.BackgroundColor3 = Color3.fromRGB(210, 50, 50)
+toggleButton.BackgroundTransparency = 0.1
+toggleButton.Text = "START SPAM"
+toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+toggleButton.Font = Enum.Font.GothamBold
+toggleButton.TextSize = 14
+toggleButton.AutoButtonColor = false
+toggleButton.Parent = autoTab
+
+local buttonCorner = Instance.new("UICorner")
+buttonCorner.CornerRadius = UDim.new(0, 8)
+buttonCorner.Parent = toggleButton
+
+local infoLabel = Instance.new("TextLabel")
+infoLabel.Name = "InfoLabel"
+infoLabel.Size = UDim2.new(1, -10, 0, 30)
+infoLabel.Position = UDim2.new(0, 5, 0, 56)
+infoLabel.BackgroundTransparency = 1
+infoLabel.Text = "Fires Activate Dumbell remote at max rate."
+infoLabel.TextColor3 = Color3.fromRGB(160, 160, 175)
+infoLabel.Font = Enum.Font.Gotham
+infoLabel.TextSize = 11
+infoLabel.TextWrapped = true
+infoLabel.TextXAlignment = Enum.TextXAlignment.Left
+infoLabel.Parent = autoTab
+
+local safeZoneButton = Instance.new("TextButton")
+safeZoneButton.Name = "SafeZoneButton"
+safeZoneButton.Size = UDim2.new(1, -10, 0, 42)
+safeZoneButton.Position = UDim2.new(0, 5, 0, 96)
+safeZoneButton.BackgroundColor3 = Color3.fromRGB(210, 50, 50)
+safeZoneButton.BackgroundTransparency = 0.1
+safeZoneButton.Text = "AUTO SAFE ZONE"
+safeZoneButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+safeZoneButton.Font = Enum.Font.GothamBold
+safeZoneButton.TextSize = 14
+safeZoneButton.AutoButtonColor = false
+safeZoneButton.Parent = autoTab
+
+local safeZoneCorner = Instance.new("UICorner")
+safeZoneCorner.CornerRadius = UDim.new(0, 8)
+safeZoneCorner.Parent = safeZoneButton
+
+local safeZoneInfoLabel = Instance.new("TextLabel")
+safeZoneInfoLabel.Name = "SafeZoneInfoLabel"
+safeZoneInfoLabel.Size = UDim2.new(1, -10, 0, 45)
+safeZoneInfoLabel.Position = UDim2.new(0, 5, 0, 142)
+safeZoneInfoLabel.BackgroundTransparency = 1
+safeZoneInfoLabel.Text = "Walks to SpawnLocation. Avoids Guardians (50 studs, 70 on Ground)."
+safeZoneInfoLabel.TextColor3 = Color3.fromRGB(160, 160, 175)
+safeZoneInfoLabel.Font = Enum.Font.Gotham
+safeZoneInfoLabel.TextSize = 11
+safeZoneInfoLabel.TextWrapped = true
+safeZoneInfoLabel.TextXAlignment = Enum.TextXAlignment.Left
+safeZoneInfoLabel.Parent = autoTab
+
+local selectedPlayer = nil
+local isSlapping = false
+
+local slapButton = Instance.new("TextButton")
+slapButton.Name = "SlapButton"
+slapButton.Size = UDim2.new(1, -10, 0, 42)
+slapButton.Position = UDim2.new(0, 5, 0, 10)
+slapButton.BackgroundColor3 = Color3.fromRGB(210, 50, 50)
+slapButton.BackgroundTransparency = 0.1
+slapButton.Text = "SLAP SELECTED PLAYER"
+slapButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+slapButton.Font = Enum.Font.GothamBold
+slapButton.TextSize = 14
+slapButton.AutoButtonColor = false
+slapButton.Parent = settingsTab
+
+local slapCorner = Instance.new("UICorner")
+slapCorner.CornerRadius = UDim.new(0, 8)
+slapCorner.Parent = slapButton
+
+-- Search Bar for Players
+local searchBox = Instance.new("TextBox")
+searchBox.Name = "SearchBox"
+searchBox.Size = UDim2.new(1, -10, 0, 32)
+searchBox.Position = UDim2.new(0, 5, 0, 58)
+searchBox.BackgroundColor3 = Color3.fromRGB(20, 20, 28)
+searchBox.BackgroundTransparency = 0.3
+searchBox.PlaceholderText = "Search player..."
+searchBox.PlaceholderColor3 = Color3.fromRGB(120, 120, 135)
+searchBox.Text = ""
+searchBox.TextColor3 = Color3.fromRGB(240, 240, 245)
+searchBox.Font = Enum.Font.GothamMedium
+searchBox.TextSize = 12
+searchBox.ClearTextOnFocus = false
+searchBox.Parent = settingsTab
+
+local searchCorner = Instance.new("UICorner")
+searchCorner.CornerRadius = UDim.new(0, 6)
+searchCorner.Parent = searchBox
+
+local searchStroke = Instance.new("UIStroke")
+searchStroke.Color = Color3.fromRGB(50, 50, 65)
+searchStroke.Thickness = 1
+searchStroke.Parent = searchBox
+
+local playerListContainer = Instance.new("ScrollingFrame")
+playerListContainer.Name = "PlayerListContainer"
+playerListContainer.Size = UDim2.new(1, -10, 1, -102)
+playerListContainer.Position = UDim2.new(0, 5, 0, 96)
+playerListContainer.BackgroundTransparency = 1
+playerListContainer.BorderSizePixel = 0
+playerListContainer.CanvasSize = UDim2.new(0, 0, 0, 0)
+playerListContainer.Parent = settingsTab
+
+local listLayout = Instance.new("UIListLayout")
+listLayout.SortOrder = Enum.SortOrder.LayoutOrder
+listLayout.Padding = UDim.new(0, 6)
+listLayout.Parent = playerListContainer
+
+listLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+    playerListContainer.CanvasSize = UDim2.new(0, 0, 0, listLayout.AbsoluteContentSize.Y + 10)
+end)
+
+local playerCardFrames = {}
+
+local function updatePlayerList()
+    for _, card in pairs(playerListContainer:GetChildren()) do
+        if card:IsA("TextButton") then
+            card:Destroy()
+        end
+    end
+    playerCardFrames = {}
+
+    local searchText = string.lower(searchBox.Text)
+
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer then
+            local playerName = string.lower(player.Name)
+            local displayName = string.lower(player.DisplayName)
+
+            if searchText == "" or string.find(playerName, searchText) or string.find(displayName, searchText) then
+                local card = Instance.new("TextButton")
+                card.Name = player.Name
+                card.Size = UDim2.new(1, 0, 0, 45)
+                card.BackgroundColor3 = (player == selectedPlayer) and Color3.fromRGB(45, 45, 65) or Color3.fromRGB(25, 25, 35)
+                card.BackgroundTransparency = 0.3
+                card.Text = ""
+                card.AutoButtonColor = false
+                card.Parent = playerListContainer
+
+                local cardCorner = Instance.new("UICorner")
+                cardCorner.CornerRadius = UDim.new(0, 8)
+                cardCorner.Parent = card
+
+                local cardStroke = Instance.new("UIStroke")
+                cardStroke.Name = "Stroke"
+                cardStroke.Color = (player == selectedPlayer) and Color3.fromRGB(80, 150, 255) or Color3.fromRGB(50, 50, 65)
+                cardStroke.Thickness = 1
+                cardStroke.Parent = card
+
+                local pfp = Instance.new("ImageLabel")
+                pfp.Name = "PFP"
+                pfp.Size = UDim2.new(0, 35, 0, 35)
+                pfp.Position = UDim2.new(0, 5, 0.5, -17.5)
+                pfp.BackgroundTransparency = 1
+                pfp.Image = "rbxasset://textures/ui/GuiImagePlaceholder.png"
+                pfp.Parent = card
+
+                local pfpCorner = Instance.new("UICorner")
+                pfpCorner.CornerRadius = UDim.new(1, 0)
+                pfpCorner.Parent = pfp
+
+                task.spawn(function()
+                    local success, content = pcall(function()
+                        return Players:GetUserThumbnailAsync(player.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size150x150)
+                    end)
+                    if success and content then
+                        pfp.Image = content
+                    end
+                end)
+
+                local nameLabel = Instance.new("TextLabel")
+                nameLabel.Name = "NameLabel"
+                nameLabel.Size = UDim2.new(1, -50, 1, 0)
+                nameLabel.Position = UDim2.new(0, 48, 0, 0)
+                nameLabel.BackgroundTransparency = 1
+                nameLabel.Text = player.Name .. " (@" .. player.DisplayName .. ")"
+                nameLabel.TextColor3 = Color3.fromRGB(230, 230, 240)
+                nameLabel.Font = Enum.Font.GothamMedium
+                nameLabel.TextSize = 13
+                nameLabel.TextXAlignment = Enum.TextXAlignment.Left
+                nameLabel.Parent = card
+
+                card.MouseButton1Click:Connect(function()
+                    selectedPlayer = player
+                    for p, c in pairs(playerCardFrames) do
+                        local stroke = c:FindFirstChild("Stroke")
+                        if p == selectedPlayer then
+                            c.BackgroundColor3 = Color3.fromRGB(45, 45, 65)
+                            if stroke then stroke.Color = Color3.fromRGB(80, 150, 255) end
+                        else
+                            c.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+                            if stroke then stroke.Color = Color3.fromRGB(50, 50, 65) end
+                        end
+                    end
+                end)
+
+                playerCardFrames[player] = card
+            end
+        end
+    end
+end
+
+searchBox:GetPropertyChangedSignal("Text"):Connect(updatePlayerList)
+Players.PlayerAdded:Connect(updatePlayerList)
+Players.PlayerRemoving:Connect(function(player)
+    if selectedPlayer == player then
+        selectedPlayer = nil
+    end
+    updatePlayerList()
+end)
+updatePlayerList()
+
+local function flatDistance(a, b)
+    local delta = a - b
+    return Vector3.new(delta.X, 0, delta.Z).Magnitude
+end
+
+local function flatDirection(vector, fallback)
+    local flat = Vector3.new(vector.X, 0, vector.Z)
+
+    if flat.Magnitude < 0.05 then
+        return fallback or Vector3.zero
+    end
+
+    return flat.Unit
+end
+
+local function getGuardianPart(guardian)
+    if guardian:IsA("BasePart") then
+        return guardian
+    end
+
+    if guardian:IsA("Model") then
+        return guardian.PrimaryPart
+            or guardian:FindFirstChild("HumanoidRootPart")
+            or guardian:FindFirstChildWhichIsA("BasePart")
+    end
+
+    return nil
+end
+
+slapButton.MouseButton1Click:Connect(function()
+    if not selectedPlayer or not selectedPlayer.Parent then
+        return
+    end
+
+    local tweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+
+    if isSlapping then
+        isSlapping = false
+        TweenService:Create(slapButton, tweenInfo, {BackgroundColor3 = Color3.fromRGB(210, 50, 50)}):Play()
+        slapButton.Text = "SLAP SELECTED PLAYER"
+        return
+    end
+
+    TweenService:Create(slapButton, tweenInfo, {BackgroundColor3 = Color3.fromRGB(50, 205, 95)}):Play()
+    slapButton.Text = "SLAPPING: " .. selectedPlayer.Name
+
+    task.spawn(function()
+        isSlapping = true
+        local lockedGuardian = nil
+        local avoidSide = 1
+        local isBypassingWall = false
+        local wallAvoidSide = 1
+
+        while isSlapping and selectedPlayer and selectedPlayer.Parent do
+            local character = LocalPlayer.Character
+            local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+            local rootPart = character and character:FindFirstChild("HumanoidRootPart")
+
+            local targetChar = selectedPlayer.Character
+            local targetRoot = targetChar and targetChar:FindFirstChild("HumanoidRootPart")
+
+            if humanoid and rootPart and targetRoot then
+                local distance = flatDistance(rootPart.Position, targetRoot.Position)
+
+                if distance <= 2 then
+                    humanoid:Move(Vector3.zero)
+                    lockedGuardian = nil
+                    isBypassingWall = false
+
+                    local remote = workspace:FindFirstChild("wmmmalol") 
+                        and workspace.wmmmalol:FindFirstChild("BanHammer") 
+                        and workspace.wmmmalol.BanHammer:FindFirstChild("RemoteEvent")
+
+                    if remote then
+                        remote:FireServer()
+                    end
+
+                    task.wait(0.3)
+                else
+                    local avoidanceRadius = 50
+
+                    local map = workspace:FindFirstChild("Map")
+                    local groundGroup = map and map:FindFirstChild("Ground")
+                    local groundPart = groundGroup and groundGroup:FindFirstChild("Ground")
+
+                    if groundPart then
+                        local gPos, gSize
+
+                        if groundPart:IsA("BasePart") then
+                            gPos = groundPart.Position
+                            gSize = groundPart.Size
+                        elseif groundPart:IsA("Model") then
+                            gPos = groundPart:GetPivot().Position
+                            gSize = groundPart:GetExtentsSize()
+                        end
+
+                        if gPos and gSize then
+                            local offset = rootPart.Position - gPos
+
+                            local inX = math.abs(offset.X) <= gSize.X / 2 + 5
+                            local inZ = math.abs(offset.Z) <= gSize.Z / 2 + 5
+                            local inY = math.abs(offset.Y) <= gSize.Y / 2 + 10
+
+                            if inX and inZ and inY then
+                                avoidanceRadius = 70
+                            end
+                        end
+                    end
+
+    
